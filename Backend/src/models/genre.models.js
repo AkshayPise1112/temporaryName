@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 const genreSchema = new Schema(
     {
@@ -7,19 +7,19 @@ const genreSchema = new Schema(
             required: true,
             unique: true,
         },
-        publicID: [
+        publics: [
             {
                 type: mongoose.Types.ObjectId,
                 ref: 'Public',
             },
         ],
-        draftID: [
+        drafts: [
             {
                 type: mongoose.Types.ObjectId,
                 ref: 'Draft',
             },
         ],
-        privateID: [
+        privates: [
             {
                 type: mongoose.Types.ObjectId,
                 ref: 'Private',
@@ -28,3 +28,5 @@ const genreSchema = new Schema(
     },
     { timestamps: true }
 );
+
+export const Genre = model('Genre', genreSchema);

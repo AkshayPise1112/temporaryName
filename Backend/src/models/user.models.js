@@ -35,7 +35,7 @@ const userSchema = new Schema(
         drafts: [
             {
                 type: mongoose.Types.ObjectId,
-                ref: 'Drafts',
+                ref: 'Draft',
             },
         ],
         public: [
