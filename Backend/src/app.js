@@ -14,4 +14,6 @@ import router from './routes/index.routes.js';
 
 app.use('/api', router);
 
+//http://localhost:8000/api/<name of the route>
+
 export { app };
