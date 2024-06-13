@@ -23,6 +23,20 @@ async function generateAccessAndRefreshTokens(userID) {
     }
 }
 
+async function uploadProfilePhoto(profileLocalPath) {
+    if (!profileLocalPath) {
+        throw new apiError(409, 'Profile File is required...');
+    }
+
+    const profile = await uploadOnCloudinary(profileLocalPath, true);
+
+    if (!profile) {
+        throw new apiError(400, 'profile is required...');
+    }
+
+    return profile?.url;
+}
+
 const registerUser = asyncHandler(async (req, res) => {
     const { username, fullName, email, password } = req.body;
 
@@ -44,23 +58,27 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // console.log(req.files);
+    console.log('profileLocalPath');
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    let profileLocalPath = null;
 
-    if (!avatarLocalPath) {
-        throw new apiError(409, 'avatar File is required...');
+    if (
+        req.files &&
+        Array.isArray(req.files.profile) &&
+        req.files.profile.length > 0
+    ) {
+        profileLocalPath = req.files?.profile[0]?.path;
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    // console.log(await uploadProfilePhoto(profileLocalPath));
 
-    if (!avatar) {
-        throw new apiError(400, 'avatar is required...');
-        // fs.unlink(avatarLocalPath);
-    }
+    const profile = profileLocalPath
+        ? await uploadProfilePhoto(profileLocalPath)
+        : 'https://res.cloudinary.com/akshaypise1112/image/upload/v1718261513/Profile%20Photos/n0umoxcel3umz6mbvqyv.png';
 
     const user = await User.create({
         fullName,
-        profile: avatar?.url,
+        profile,
         email,
         password,
         username: username.toLowerCase(),
