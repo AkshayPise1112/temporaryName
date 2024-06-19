@@ -38,7 +38,18 @@ async function uploadProfilePhoto(profileLocalPath) {
 }
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { username, fullName, email, password } = req.body;
+    const { username, fullName, email, password, about } = req.body;
+
+    // console.log(
+    //     req.files.profile[0].path,
+    //     username,
+    //     fullName,
+    //     email,
+    //     password,
+    //     about
+    // );
+
+    // return res.status(201).json({ message: 'all is running' });
 
     if (
         [fullName, username, email, password].some(
@@ -58,7 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // console.log(req.files);
-    console.log('profileLocalPath');
+    // console.log('profileLocalPath');
 
     let profileLocalPath = null;
 
@@ -79,9 +90,10 @@ const registerUser = asyncHandler(async (req, res) => {
     const user = await User.create({
         fullName,
         profile,
-        email,
+        email: email.toLowerCase(),
         password,
         username: username.toLowerCase(),
+        about,
     });
 
     const chk_user = await User.findById(user._id).select(
